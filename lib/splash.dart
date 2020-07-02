@@ -3,7 +3,7 @@ import 'package:bookface/constants/images.dart';
 import 'package:bookface/constants/strings.dart';
 import 'package:bookface/routes/routes.dart';
 import 'package:flutter/material.dart';
-
+import 'package:simple_animations/simple_animations.dart';
 import 'helpers/connection.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -40,36 +40,17 @@ class _SplashScreenState extends State<SplashScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Card(
-                          elevation: 15,
-                          shape: CircleBorder(),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 90,
-                            child: Image.asset(
-                              Images.app_logo,
-                              width: 120,
-                              height: 120,
-                            ),
-                          ),
+                        FadeIn(
+                          1.9,
+                          Logo(),
                         ),
-                        Text(
-                          Strings.app_name,
-                          textDirection: TextDirection.ltr,
-                          style: TextStyle(
-                            fontSize: 50,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w300,
-                          ),
+                        FadeIn(
+                          2.1,
+                          AppName(),
                         ),
-                        Text(
-                          Strings.tagline,
-                          textDirection: TextDirection.ltr,
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w200,
-                          ),
+                        FadeIn(
+                          2.1,
+                          AppTag(),
                         ),
                       ],
                     ),
@@ -78,24 +59,18 @@ class _SplashScreenState extends State<SplashScreen> {
                     left: 30,
                     width: 80,
                     height: 200,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(Images.light1),
-                        ),
-                      ),
+                    child: FadeIn(
+                      1.0,
+                      Light1(),
                     ),
                   ),
                   Positioned(
                     left: 80,
                     width: 80,
                     height: 150,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(Images.light2),
-                        ),
-                      ),
+                    child: FadeIn(
+                      1.3,
+                      Light2(),
                     ),
                   ),
                   Positioned(
@@ -103,12 +78,9 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: 100,
                     height: 150,
                     top: 60,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(Images.clock),
-                        ),
-                      ),
+                    child: FadeIn(
+                      1.6,
+                      Clock(),
                     ),
                   ),
                   Positioned(
@@ -116,12 +88,9 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: 80,
                     height: 150,
                     bottom: 30,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(Images.plant),
-                        ),
-                      ),
+                    child: FadeIn(
+                      2.4,
+                      Plant(),
                     ),
                   ),
                   Positioned(
@@ -129,12 +98,9 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: 240,
                     height: 240,
                     bottom: 40,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(Images.bubble),
-                        ),
-                      ),
+                    child: FadeIn(
+                      2.7,
+                      Bubble(),
                     ),
                   ),
                   Positioned(
@@ -142,12 +108,9 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: 200,
                     height: 450,
                     bottom: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(Images.lamp),
-                        ),
-                      ),
+                    child: FadeIn(
+                      2.7,
+                      Lamp(),
                     ),
                   ),
                 ],
@@ -187,5 +150,164 @@ class _SplashScreenState extends State<SplashScreen> {
 
   navigate() async {
     Navigator.of(context).pushNamed(Routes.login);
+  }
+}
+
+enum _AniProps { opacity, translateY }
+
+class FadeIn extends StatelessWidget {
+  final double delay;
+  final Widget child;
+
+  FadeIn(this.delay, this.child);
+
+  @override
+  Widget build(BuildContext context) {
+    final tween = MultiTween<_AniProps>()
+      ..add(_AniProps.opacity, Tween(begin: 0.0, end: 1.0),
+          Duration(milliseconds: 500))
+      ..add(_AniProps.translateY, Tween(begin: -30.0, end: 0.0),
+          Duration(milliseconds: 500), Curves.easeOut);
+
+    return PlayAnimation<MultiTweenValues<_AniProps>>(
+      delay: Duration(milliseconds: (500 * delay).round()),
+      duration: tween.duration,
+      tween: tween,
+      child: child,
+      builder: (context, child, value) => Opacity(
+        opacity: value.get(_AniProps.opacity),
+        child: Transform.translate(
+          offset: Offset(value.get(_AniProps.translateY), 0),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+class Light1 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(Images.light1),
+        ),
+      ),
+    );
+  }
+}
+
+class Light2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(Images.light2),
+        ),
+      ),
+    );
+  }
+}
+
+class Clock extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(Images.clock),
+        ),
+      ),
+    );
+  }
+}
+
+class Plant extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(Images.plant),
+        ),
+      ),
+    );
+  }
+}
+
+class Bubble extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(Images.bubble),
+        ),
+      ),
+    );
+  }
+}
+
+class Lamp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(Images.lamp),
+        ),
+      ),
+    );
+  }
+}
+
+class Logo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 15,
+      shape: CircleBorder(),
+      child: CircleAvatar(
+        backgroundColor: Colors.white,
+        radius: 90,
+        child: Image.asset(
+          Images.app_logo,
+          width: 120,
+          height: 120,
+        ),
+      ),
+    );
+  }
+}
+
+class AppName extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      Strings.app_name,
+      textDirection: TextDirection.ltr,
+      style: TextStyle(
+        fontSize: 50,
+        fontStyle: FontStyle.italic,
+        fontWeight: FontWeight.w300,
+      ),
+    );
+  }
+}
+
+class AppTag extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      Strings.tagline,
+      textDirection: TextDirection.ltr,
+      style: TextStyle(
+        fontSize: 30,
+        fontStyle: FontStyle.italic,
+        fontWeight: FontWeight.w200,
+      ),
+    );
   }
 }
